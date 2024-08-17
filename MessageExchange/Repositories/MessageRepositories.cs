@@ -6,7 +6,6 @@ namespace MessageExchange.Repositories;
 
 public class MessageRepository : IMessageRepository
 {
-    private readonly string _connectionString;
     private readonly IDbConnection _dbConnection;
 
     private readonly ILogger _logger;
@@ -15,7 +14,6 @@ public class MessageRepository : IMessageRepository
     public MessageRepository(string connectionString,ILogger<MessageRepository> logger)
     {
         _logger = logger;
-        _connectionString = connectionString;
         _dbConnection = new SqlConnection(connectionString);
         
         if (!_isInit)
