@@ -20,7 +20,7 @@ public class Program
         #endregion
 
         string connectionString = "Server=(localdb)\\mssqllocaldb;Database=messagedb;Trusted_Connection=True";
-        builder.Services.AddScoped<IMessageRepository>(provider => new MessageRepository(connectionString,provider.GetRequiredService<ILogger<MessageRepository>>()));
+        builder.Services.AddScoped<IMessageRepository>(provider => new MessageRepository(connectionString, provider.GetRequiredService<ILogger<MessageRepository>>()));
 
         // Add services to the container.
 

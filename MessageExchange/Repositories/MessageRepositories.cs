@@ -1,6 +1,6 @@
 ﻿using Dapper;
-using System.Data;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace MessageExchange.Repositories;
 
@@ -11,11 +11,11 @@ public class MessageRepository : IMessageRepository
     private readonly ILogger _logger;
     private static bool _isInit = false;
 
-    public MessageRepository(string connectionString,ILogger<MessageRepository> logger)
+    public MessageRepository(string connectionString, ILogger<MessageRepository> logger)
     {
         _logger = logger;
         _dbConnection = new SqlConnection(connectionString);
-        
+
         if (!_isInit)
         {
             CteateTable();
@@ -25,27 +25,27 @@ public class MessageRepository : IMessageRepository
 
     public Task CreateAsync(Message message)
     {
-            var sqlQuery = "INSERT INTO Messages (SerialNumber, DateCreated, Content) VALUES(@SerialNumber, @DateCreated, @Content)";
-            _logger.LogInformation("Sql query {sqlQuery}",sqlQuery);
+        var sqlQuery = "INSERT INTO Messages (SerialNumber, DateCreated, Content) VALUES(@SerialNumber, @DateCreated, @Content)";
+        _logger.LogInformation("Sql query {sqlQuery}", sqlQuery);
 
-            return _dbConnection.ExecuteAsync(sqlQuery, message);
+        return _dbConnection.ExecuteAsync(sqlQuery, message);
 
-            // если нужно получить id
-            //var sqlQuery = "INSERT INTO Users (SerialNumber, DateCreation,Text) VALUES(@SerialNumber, @DateCreation, @Text); SELECT CAST(SCOPE_IDENTITY() as int)";
-            //int? messageId = db.Query<int>(sqlQuery, message).FirstOrDefault();
-            //message.Id = messageId.Value;
+        // если нужно получить id
+        //var sqlQuery = "INSERT INTO Users (SerialNumber, DateCreation,Text) VALUES(@SerialNumber, @DateCreation, @Text); SELECT CAST(SCOPE_IDENTITY() as int)";
+        //int? messageId = db.Query<int>(sqlQuery, message).FirstOrDefault();
+        //message.Id = messageId.Value;
     }
 
     public Task<IEnumerable<Message>> GetByDateAsync(DateTime startDate, DateTime endDate)
     {
-            var sqlQuery = """
+        var sqlQuery = """
                 SELECT *
                 FROM Messages
                 WHERE DateCreated BETWEEN @startDate AND @endDate;
                 """;
 
-            _logger.LogInformation("Sql query {sqlQuery}", sqlQuery);
-            return _dbConnection.QueryAsync<Message>(sqlQuery, new { startDate, endDate });
+        _logger.LogInformation("Sql query {sqlQuery}", sqlQuery);
+        return _dbConnection.QueryAsync<Message>(sqlQuery, new { startDate, endDate });
     }
 
     ~MessageRepository()

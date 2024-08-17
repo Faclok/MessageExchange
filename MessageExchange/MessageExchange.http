@@ -1,6 +1,7 @@
 @MessageExchange_HostAddress = http://localhost:5228
 
-GET {{MessageExchange_HostAddress}}/weatherforecast/
+POST {{MessageExchange_HostAddress}}/api/message
+GET {{MessageExchange_HostAddress}}/api/message
 Accept: application/json
 
 ###
