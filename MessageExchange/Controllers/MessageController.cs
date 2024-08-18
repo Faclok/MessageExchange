@@ -60,8 +60,9 @@ public partial class MessageController(IWebSocketHandler webSocket, ILogger<Mess
             DateCreated = DateTime.UtcNow,
             SerialNumber = request.SerialNumber,
         };
-        await _socketHandler.SendAllAsync(message);
 
         await _messageRepository.CreateAsync(message);
+
+        await _socketHandler.SendAllAsync(message);
     }
 }
