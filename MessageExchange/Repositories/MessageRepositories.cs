@@ -11,10 +11,12 @@ public class MessageRepository : IMessageRepository
     private readonly ILogger _logger;
     private static bool _isInit = false;
 
-    public MessageRepository(string connectionString, ILogger<MessageRepository> logger)
+    public MessageRepository(IConfiguration configuration, ILogger<MessageRepository> logger)
     {
         _logger = logger;
-        _dbConnection = new SqlConnection(connectionString);
+        if (configuration["stringConnectDb"] is not { } stringConnect)
+            throw new ArgumentNullException();
+        _dbConnection = new SqlConnection(stringConnect);
 
         if (!_isInit)
         {

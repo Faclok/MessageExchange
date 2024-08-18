@@ -1,0 +1,38 @@
+services:
+
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: messageexchange
+      POSTGRES_PASSWORD: root1234
+      POSTGRES_DB: messagedb
+
+  client:
+    image: client
+    ports:
+      - "5001:3000"
+    environment:
+      - NODE_ENV=production
+      - WDS_SOCKET_PORT=0
+      - API_URL=http://messageexchange:3000
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+
+  messageexchange:
+    image: ${DOCKER_REGISTRY-}messageexchange
+    build:
+      context: .
+      dockerfile: MessageExchange/Dockerfile
+    environment: 
+      stringConnectDb: "Server=db;Database=messagedb;User Id=messageexchange;Password=root1234"
+
+  proxy:
+    image: nginx:mainline
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+

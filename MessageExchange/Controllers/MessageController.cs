@@ -11,10 +11,10 @@ namespace MessageExchange.Controllers;
 /// <param name="messageRepository">The message repository instance.</param>
 [ApiController]
 [Route("api/[controller]")]
-public partial class MessageController(ILogger<Message> logger, IMessageRepository messageRepository) : ControllerBase
+public partial class MessageController(IWebSocketHandler webSocket, ILogger<Message> logger, IMessageRepository messageRepository) : ControllerBase
 {
     private readonly IMessageRepository _messageRepository = messageRepository;
-
+    private readonly IWebSocketHandler _socketHandler = webSocket;
     private readonly ILogger _logger = logger;
 
 
@@ -50,7 +50,7 @@ public partial class MessageController(ILogger<Message> logger, IMessageReposito
     /// <param name="request">The request containing the message details.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     [HttpPost]
-    public Task Create([FromBody] MessageRequest request)
+    public async Task Create([FromBody] MessageRequest request)
     {
         _logger.LogInformation("Request to create a message {@request}", request);
 
@@ -60,8 +60,8 @@ public partial class MessageController(ILogger<Message> logger, IMessageReposito
             DateCreated = DateTime.UtcNow,
             SerialNumber = request.SerialNumber,
         };
+        await _socketHandler.SendAllAsync(message);
 
-        return _messageRepository.CreateAsync(message);
-
+        await _messageRepository.CreateAsync(message);
     }
 }
