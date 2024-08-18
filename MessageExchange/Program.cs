@@ -19,6 +19,17 @@ public class Program
         builder.Host.UseSerilog();
         #endregion
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+            });
+        });
+
         string connectionString = "Server=(localdb)\\mssqllocaldb;Database=messagedb;Trusted_Connection=True";
         builder.Services.AddScoped<IMessageRepository>(provider => new MessageRepository(connectionString, provider.GetRequiredService<ILogger<MessageRepository>>()));
 
@@ -46,6 +57,7 @@ public class Program
 
         app.UseAuthorization();
 
+        app.UseCors();
 
         app.MapControllers();
 

@@ -25,7 +25,7 @@ public partial class MessageController(ILogger<Message> logger, IMessageReposito
     /// <param name="endDate">The end date for filtering messages. If null, defaults to the current time.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a collection of messages.</returns>
     [HttpGet]
-    public Task<IEnumerable<Message>> Get(DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<IEnumerable<Message>> Get(DateTime? startDate = null, DateTime? endDate = null)
     {
         if (startDate is null)
             startDate = DateTime.UtcNow.AddMinutes(-10);
@@ -40,7 +40,7 @@ public partial class MessageController(ILogger<Message> logger, IMessageReposito
 
         _logger.LogInformation("Request {startDate} {endDate}", startDate, endDate);
 
-        var messages = _messageRepository.GetByDateAsync(startDate.Value, endDate.Value);
+        var messages = await _messageRepository.GetByDateAsync(startDate.Value, endDate.Value);
         return messages;
     }
 
