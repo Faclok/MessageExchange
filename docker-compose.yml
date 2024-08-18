@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: messageexchange
       POSTGRES_PASSWORD: root1234
       POSTGRES_DB: messagedb
+    ports:
+    - "5432:5432" 
 
   client:
     image: client
@@ -16,7 +18,7 @@ services:
     environment:
       - NODE_ENV=production
       - WDS_SOCKET_PORT=0
-      - API_URL=http://messageexchange:3000
+      - API_URL=http://messageexchange:8080
     build:
       context: ./web-client
       dockerfile: Dockerfile
@@ -27,7 +29,9 @@ services:
       context: .
       dockerfile: MessageExchange/Dockerfile
     environment: 
-      stringConnectDb: "Server=db;Database=messagedb;User Id=messageexchange;Password=root1234"
+      stringConnectDb: "Host=db;Database=messagedb;Username=messageexchange;Password=root1234"
+    ports:
+    - "8080:8080" 
 
   proxy:
     image: nginx:mainline

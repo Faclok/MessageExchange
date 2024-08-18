@@ -16,7 +16,7 @@ public class MessageRepository : IMessageRepository
         _logger = logger;
         if (configuration["stringConnectDb"] is not { } stringConnect)
             throw new ArgumentNullException();
-        _dbConnection = new SqlConnection(stringConnect);
+        _dbConnection = new Npgsql.NpgsqlConnection(stringConnect);
 
         if (!_isInit)
         {
@@ -57,7 +57,11 @@ public class MessageRepository : IMessageRepository
 
     public void CteateTable()
     {
-        var sqlQuery = @"IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Messages') SELECT 1 ELSE SELECT 0";
+        var sqlQuery = @"SELECT CASE
+    WHEN EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Messages') THEN 1
+    ELSE 0
+END;
+";
 
         _logger.LogInformation("Sql query {sqlQuery}", sqlQuery);
         // Проверка существования таблицы
@@ -67,10 +71,10 @@ public class MessageRepository : IMessageRepository
         {
             sqlQuery = """
                 CREATE TABLE Messages (
-                    Id INT PRIMARY KEY IDENTITY,
+                    Id SERIAL PRIMARY KEY,
                     SerialNumber INT NOT NULL,
-                    DateCreated DATETIME NOT NULL,
-                    Content NVARCHAR(128) NOT NULL
+                    DateCreated TIMESTAMP NOT NULL,
+                    Content VARCHAR(128) NOT NULL
                 );
                 """;
             _logger.LogInformation("Sql query {sqlQuery}", sqlQuery);
