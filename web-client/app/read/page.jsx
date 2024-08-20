@@ -6,7 +6,7 @@ export default function Read() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const socket = new WebSocket(`${process.env.API_URL.replace('http', 'ws')}/ws`);
+    const socket = new WebSocket(`ws://${window.location.host}:8080/ws`);
 
     socket.onopen = () => {
       console.log('WebSocket connection established');

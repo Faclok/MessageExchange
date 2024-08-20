@@ -11,7 +11,7 @@ export default function ViewList() {
 
   const fetchMessages = async (start, end) => {
     try {
-      const response = await axios.get(`${process.env.API_URL}/api/Message`, {
+      const response = await axios.get(`/api/Message`, {
         params: {
           startDate: start,
           endDate: end,

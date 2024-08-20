@@ -1,7 +1,7 @@
 // src/app/write/page.jsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 export default function Write() {
@@ -22,7 +22,7 @@ export default function Write() {
     };
 
     try {
-      await axios.post(`${process.env.API_URL}/api/Message`, newMessage);
+      await axios.post(`/api/Message`, newMessage);
       setMessages([...messages, newMessage]);
       setSerialNumber(serialNumber + 1);
       setMessage('');
